@@ -1,29 +1,5 @@
 from math import sqrt, pi, log10
-
-def get_float(prompt):
-    """
-    Demande à l'utilisateur d'entrer un nombre flottant.
-    """
-    while True:
-        try:
-            value = float(input(prompt))
-            return value
-        except ValueError:
-            print("Entrée invalide. Veuillez entrer un nombre.")
-
-def get_positive_int(prompt):
-    """
-    Demande à l'utilisateur d'entrer un nombre entier positif.
-    """
-    while True:
-        try:
-            value = int(input(prompt))
-            if value <= 0:
-                print("La valeur doit être un nombre entier positif. Veuillez réessayer.")
-                continue
-            return value
-        except ValueError:
-            print("Entrée invalide. Veuillez entrer un nombre entier.")
+from functions import get_float
 
 def liaison():
     """
@@ -34,7 +10,7 @@ def liaison():
         print("2. Convertir en linéaire")
         print("3. Calculer Lp")
         print("4. Calculer dmax")
-        print("5. Calculer Feq")
+        print("5. ")
         print("6. Sortir")
         
         choice = input("Entrer votre choix: ")
@@ -48,7 +24,7 @@ def liaison():
         elif choice == '4':
             calcul_d()
         elif choice == '5':
-            calcul_Feq()
+            continue
         elif choice == '6':
             print("Sortir...")
             break
@@ -102,37 +78,3 @@ def calcul_d():
         return
     d = sqrt(Lp)*C/(4*pi*F)
     print("La distance dmax est: ", "{:.3e}".format(d), "m")
-
-def calcul_Feq():
-    """
-    Calcule le facteur de bruit équivalent Feq.
-    """
-    n = get_positive_int("Entrez le nombre de quadrupôles n: ")
-    F_type = input("Le facteur de bruit F est-il en dB (1) ou linéaire (2)? (1/2): ")
-
-    for i in range(n):
-        f = get_float(f"Entrez le facteur de bruit F{i+1}: ")
-        g = get_float(f"Entrez le gain G{i+1}: ")
-
-        # Si F et G sont en dB, les convertir en linéaire
-        if F_type == '1':
-            f = 10**(f/10)
-            g = 10**(g/10)
-
-        # Calculer F et mettre à jour g_1
-        if i == 0:
-            F = f
-            g_1 = g
-        else:
-            F += (f-1)/g_1
-            g_1 *= g
-        print("{:.3e}".format(F), "{:.3e}".format(g_1))
-
-    # Imprimer le facteur de bruit équivalent
-    if F_type == '1':
-        Feq_db = 10*log10(F)
-        print("Le facteur de bruit équivalent Feq est: ", "{:.3e}".format(Feq_db), "dB")
-    elif F_type == '2':
-        print("Le facteur de bruit équivalent Feq est: ", "{:.3e}".format(F))
-    else:
-        print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour la valeur linéaire.")

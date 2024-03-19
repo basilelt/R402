@@ -1,4 +1,5 @@
 from liaison import liaison
+from bruit import bruit
 
 def main():
     """
@@ -6,7 +7,7 @@ def main():
     """
     while True:
         print("1. Bilan de Liaison")
-        print("2. ")
+        print("2. Facteur de bruit")
         print("3. Sortir")
         
         choice = input("Entrer votre choix: ")
@@ -14,12 +15,12 @@ def main():
         if choice == '1':
             liaison()
         elif choice == '2':
-            continue
+            bruit
         elif choice == '3':
             print("Sortir...")
             break
         else:
-            print("Choix invalide. Veuillez entrer un chiffre entre 1-6.")
+            print("Choix invalide. Veuillez entrer un chiffre entre 1-3.")
 
 if __name__ == "__main__":
     main()
