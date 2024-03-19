@@ -27,8 +27,12 @@ def calcul_Feq():
     Calcule le facteur de bruit équivalent Feq.
     """
     n = get_positive_int("Entrez le nombre de quadrupôles n: ")
-    F_type = input("Le facteur de bruit F est-il en dB (1) ou linéaire (2)? (1/2): ")
-
+    while True:
+        F_type = input("Le facteur de bruit F est-il en dB (1) ou linéaire (2)? (1/2): ")
+        if F_type not in ['1', '2']:
+            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour la valeur linéaire.")
+        else:
+            break
     for i in range(n):
         f = get_float(f"Entrez le facteur de bruit F{i+1}: ")
         g = get_float(f"Entrez le gain G{i+1}: ")
@@ -53,15 +57,19 @@ def calcul_Feq():
         print("Le facteur de bruit équivalent Feq est: ", "{:.3e}".format(Feq_db), "dB")
     elif F_type == '2':
         print("Le facteur de bruit équivalent Feq est: ", "{:.3e}".format(F))
-    else:
-        print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour la valeur linéaire.")
+    return Feq_db
 
 def calcul_Teq():
     """
     Calcule la température de bruit équivalente Teq.
     """
     n = get_positive_int("Entrez le nombre de quadrupôles n: ")
-    T_type = input("La température de bruit T est-elle en K (1) ou en dB (2)? (1/2): ")
+    while True:
+        T_type = input("La température de bruit T est-elle en K (1) ou en dB (2)? (1/2): ")
+        if T_type not in ['1', '2']:
+            print("Entrée non valide. Veuillez entrer '1' pour K ou '2' pour la valeur en dB.")
+        else:
+            break
 
     for i in range(n):
         t = get_float(f"Entrez la température de bruit T{i+1}: ")
@@ -86,5 +94,3 @@ def calcul_Teq():
         print("La température de bruit équivalente Teq est: ", "{:.3e}".format(Teq_db), "dB")
     elif T_type == '1':
         print("La température de bruit équivalente Teq est: ", "{:.3e}".format(T))
-    else:
-        print("Entrée non valide. Veuillez entrer '1' pour K ou '2' pour la valeur en dB.")

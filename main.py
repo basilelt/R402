@@ -1,5 +1,6 @@
 from liaison import liaison
 from bruit import bruit
+from information import information
 
 def main():
     """
@@ -8,15 +9,18 @@ def main():
     while True:
         print("1. Bilan de Liaison")
         print("2. Facteur de bruit")
-        print("3. Sortir")
+        print("3. Théorie de l'information")
+        print("4. Sortir")
         
         choice = input("Entrer votre choix: ")
         
         if choice == '1':
             liaison()
         elif choice == '2':
-            bruit
+            bruit()
         elif choice == '3':
+            information()
+        elif choice == '4':
             print("Sortir...")
             break
         else:
