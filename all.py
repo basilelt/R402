@@ -19,18 +19,20 @@ def get_positive_int(prompt):
         try:
             value = int(input(prompt))
             if value <= 0:
-                print("La valeur doit être un nombre entier positif. Veuillez réessayer.")
+                print("La valeur doit être un nombre entier positif. "
+                      "Veuillez réessayer.")
                 continue
             return value
         except ValueError:
             print("Entrée invalide. Veuillez entrer un nombre entier.")
 
-#####################################################################################################################
+################################################################################
 
 def liaison():
     """
     Fonction principale qui affiche le menu et gère les choix de l'utilisateur.
     """
+    input("Appuyez sur entrer pour continuer")
     while True:
         print("1. Convertir en dB")
         print("2. Convertir en linéaire")
@@ -84,7 +86,8 @@ def convert_lin():
     Convertit une puissance en linéaire.
     """
     P = get_float("Entrer la puissance P: ")
-    print("La puissance en linéaire est: ", "{:.3e}".format(10**(P/10)), "W")
+    print("La puissance en linéaire est:\n",
+          "{:.3e}".format(10**(P/10)), "W")
 
 def calcul_Lp(result_type=''):
     """
@@ -97,8 +100,10 @@ def calcul_Lp(result_type=''):
     d = get_float("Entrer la distance d: ")
     Lp = (4*pi*d*F/C)**2
     Lp_dB = 10*log10(Lp)
-    print("La perte en ligne Lp est: ", "{:.3e}".format(Lp_dB), "dB")
-    print("La perte en ligne linéaire Lp est: ", "{:.3e}".format(Lp))
+    print("La perte en ligne Lp est:\n",
+          "{:.3e}".format(Lp_dB), "dB")
+    print("La perte en ligne linéaire Lp est:\n",
+          "{:.3e}".format(Lp))
    
     if result_type == '1':
         return Lp_dB
@@ -114,14 +119,16 @@ def calcul_d(Lp=0):
     F = get_float("Entrer la fréquence F: ")
     
     while Lp == 0:
-        Lp_type = input("La perte en ligne Lp est-elle en dB (1) ou en valeur linéaire (2) ? (1/2): ")
+        Lp_type = input("La perte en ligne Lp est-elle en dB (1) ou en valeur\n"
+                        "linéaire (2) ? (1/2): ")
         if Lp_type == '1':
             Lp_db = get_float("Entrer la perte en ligne Lp en dB: ")
             Lp = 10**(Lp_db/10)  # Convertit dB en linéaire
         elif Lp_type == '2':
             Lp = get_float("Entrer la perte en ligne Lp en valeur linéaire: ")
         else:
-            print("Entrée invalide. Veuillez entrer '1' pour dB ou '2' pour valeur linéaire.")
+            print("Entrée invalide. Veuillez entrer '1' pour dB ou '2' pour\n"
+                  "valeur linéaire.")
             continue
 
     d = sqrt(Lp)*C/(4*pi*F)
@@ -132,7 +139,8 @@ def calcul_dmax():
     Calcule la distance dmax.
     """
     while True:
-        unit = input("Voulez-vous entrer les valeurs en dB (1) ou en watts (2)? (1/2): ")
+        unit = input("Voulez-vous entrer les valeurs en dB (1) ou en watts\n"
+                     "(2)? (1/2): ")
         if unit == '1':
             Gt = get_float("Entrer le gain de l'émetteur Gt en dB: ")
             Gr = get_float("Entrer le gain du récepteur Gr en dB: ")
@@ -140,13 +148,25 @@ def calcul_dmax():
             S = get_float("Entrer la sensibilité S en dB: ")
             break
         elif unit == '2':
-            Gt = 10*log10(get_float("Entrer le gain de l'émetteur Gt en watts: "))  # Convertit watts en dB
-            Gr = 10*log10(get_float("Entrer le gain du récepteur Gr en watts: "))  # Convertit watts en dB
-            Pe = 10*log10(get_float("Entrer la puissance émise Pe en watts: "))  # Convertit watts en dB
-            S = 10*log10(get_float("Entrer la sensibilité S en watts: "))
+            Gt = 10*log10(get_float(
+                "Entrer le gain de l'émetteur Gt en watts: "))  
+            # Convertit watts en dB
+
+            Gr = 10*log10(get_float(
+                "Entrer le gain du récepteur Gr en watts: "))  
+            # Convertit watts en dB
+
+            Pe = 10*log10(get_float(
+                "Entrer la puissance émise Pe en watts: "))  
+            # Convertit watts en dB
+
+            S = 10*log10(get_float(
+                "Entrer la sensibilité S en watts: "))  
+            # Convertit watts en dB
             break
         else:
-            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour watts.")
+            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour\n"
+                  "watts.")
 
     Lpmax = S + Pe + Gt + Gr
     calcul_d(Lpmax)
@@ -156,33 +176,46 @@ def calcul_Pr():
     Calcule la puissance reçue Pr.
     """
     while True:
-        unit = input("Voulez-vous entrer les valeurs en dB (1) ou en watts (2)? (1/2): ")
+        unit = input("Voulez-vous entrer les valeurs en dB (1) ou en watts\n"
+                     "(2)? (1/2): ")
         if unit == '1':
             Gt = get_float("Entrer le gain de l'émetteur Gt en dB: ")
             Gr = get_float("Entrer le gain du récepteur Gr en dB: ")
             Pe = get_float("Entrer la puissance émise Pe en dB: ")
             break
         elif unit == '2':
-            Gt = 10*log10(get_float("Entrer le gain de l'émetteur Gt en watts: "))  # Convertit watts en dB
-            Gr = 10*log10(get_float("Entrer le gain du récepteur Gr en watts: "))  # Convertit watts en dB
-            Pe = 10*log10(get_float("Entrer la puissance émise Pe en watts: "))  # Convertit watts en dB
+            Gt = 10*log10(get_float(
+                "Entrer le gain de l'émetteur Gt en watts: "))  
+            # Convertit watts en dB
+
+            Gr = 10*log10(get_float(
+                "Entrer le gain du récepteur Gr en watts: "))  
+            # Convertit watts en dB
+
+            Pe = 10*log10(get_float(
+                "Entrer la puissance émise Pe en watts: "))  
+            # Convertit watts en dB
             break
         else:
-            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour watts.")
+            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour\n"
+                  "watts.")
 
     while True:
-        Lp_known = input("La perte en ligne Lp est-elle connue ? Oui (1) ou non (2)? (1/2): ")
+        Lp_known = input("La perte en ligne Lp est-elle connue ? Oui (1) ou\n"
+                         "non (2)? (1/2): ")
         if Lp_known == '1':
             if unit == '1':
                 Lp = get_float("Entrer la perte en ligne Lp en dB: ")
             elif unit == '2':
-                Lp = 10*log10(get_float("Entrer la perte en ligne Lp en watts: "))  # Convertit watts en dB
+                Lp = 10*log10(get_float("Entrer la perte en ligne Lp en watts:"
+                                        " "))  # Convertit watts en dB
             break
         elif Lp_known == '2':
             Lp = calcul_Lp(unit)
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, la perte en ligne Lp est connue, ou '2' pour non.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui, la perte\n"
+                  "en ligne Lp est connue, ou '2' pour non.")
     Pr = Pe + Gt + Gr - Lp
     Pr_W = 10**(Pr/10)
     print("La puissance reçue Pr est: ", "{:.3e}".format(Pr), "dB")
@@ -194,33 +227,42 @@ def calcul_Pe():
     Calcule la puissance émise Pe.
     """
     while True:
-        unit = input("Voulez-vous entrer les valeurs en dB (1) ou en watts (2)? (1/2): ")
+        unit = input("Voulez-vous entrer les valeurs en dB (1) ou en\n"
+                     "watts (2)? (1/2): ")
         if unit == '1':
             Gt = get_float("Entrer le gain de l'émetteur Gt en dB: ")
             Gr = get_float("Entrer le gain du récepteur Gr en dB: ")
             Pr = get_float("Entrer la puissance reçue Pr en dB: ")
             break
         elif unit == '2':
-            Gt = 10*log10(get_float("Entrer le gain de l'émetteur Gt en watts: "))  # Convertit watts en dB
-            Gr = 10*log10(get_float("Entrer le gain du récepteur Gr en watts: "))  # Convertit watts en dB
-            Pr = 10*log10(get_float("Entrer la puissance reçue Pr en watts: "))  # Convertit watts en dB
+            Gt = 10*log10(get_float("Entrer le gain de l'émetteur Gt en watts:"
+                                    " "))  # Convertit watts en dB
+            Gr = 10*log10(get_float("Entrer le gain du récepteur Gr en watts:"
+                                    " "))  # Convertit watts en dB
+            Pr = 10*log10(get_float("Entrer la puissance reçue Pr en watts:"
+                                    " "))  # Convertit watts en dB
             break
         else:
-            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour watts.")
+            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour\n"
+                  "watts.")
 
     while True:
-        Lp_known = input("La perte en ligne Lp est-elle connue ? Oui (1) ou non (2)? (1/2): ")
+        Lp_known = input("La perte en ligne Lp est-elle connue ? Oui (1) ou\n"
+                         "non (2)? (1/2): ")
         if Lp_known == '1':
             if unit == '1':
                 Lp = get_float("Entrer la perte en ligne Lp en dB: ")
             elif unit == '2':
-                Lp = 10*log10(get_float("Entrer la perte en ligne Lp en watts: "))  # Convertit watts en dB
+                Lp = 10*log10(get_float("Entrer la perte en ligne Lp en watts:"
+                                        " "))  # Convertit watts en dB
             break
         elif Lp_known == '2':
             Lp = calcul_Lp(unit)
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, la perte en ligne Lp est connue, ou '2' pour non, elle n'est pas connue.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui, la perte\n"
+                  "en ligne Lp est connue, ou '2' pour non, elle n'est pas\n"
+                  "connue.")
 
     Pe = Pr - Gt - Gr + Lp
     print("La puissance émise Pe est: ", "{:.3e}".format(Pe), "dB")
@@ -250,7 +292,8 @@ def calcul_signal_bruit():
 
     # Calculer ou obtenir Pr
     while True:
-        Pr_known = input("La puissance reçue Pr est-elle connue ? Oui (1) ou non (2)? (1/2): ")
+        Pr_known = input("La puissance reçue Pr est-elle connue ? Oui (1) ou\n"
+                         "non (2)? (1/2): ")
         if Pr_known == '1':
             Pr = get_float("Entrer la puissance reçue Pr (W): ")
             break
@@ -258,20 +301,23 @@ def calcul_signal_bruit():
             Pr = calcul_Pr()
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, la puissance reçue Pr est connue, ou '2' pour non.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui, la\n"
+                  "puissance reçue Pr est connue, ou '2' pour non.")
 
     # Calculer Eb/N0
     Eb_N0 = Pr / (N0 * Rb)
 
     print("Le rapport signal/bruit Eb/N0 est: ", "{:.3e}".format(Eb_N0))
-    print("Le rapport signal/bruit Eb/N0 est: ", "{:.3e}".format(10*log10(Eb_N0)), "dB")
+    print("Le rapport signal/bruit Eb/N0 est: ",
+          "{:.3e}".format(10*log10(Eb_N0)), "dB")
     
 def calcul_S():
     """
     Calcule la sensibilité S.
     """
     while True:
-        Pr_known = input("La puissance reçue Pr est-elle connue ? Oui (1) ou non (2)? (1/2): ")
+        Pr_known = input("La puissance reçue Pr est-elle connue ? Oui (1) ou\n"
+                         "non (2)? (1/2): ")
         if Pr_known == '1':
             Pr = get_float("Entrer la puissance reçue Pr (dB): ")
             break
@@ -279,26 +325,31 @@ def calcul_S():
             Pr = 10*log10(calcul_Pr())
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, la puissance reçue Pr est connue, ou '2' pour non.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui, la\n"
+                  "puissance reçue Pr est connue, ou '2' pour non.")
     while True:
-        Feq_known = input("Le facteur de bruit équivalent Feq est-il connu ? Oui (1) ou non (2)? (1/2): ")
+        Feq_known = input("Le facteur de bruit équivalent Feq est-il connu ?\n"
+                          "Oui (1) ou non (2)? (1/2): ")
         if Feq_known == '1':
-            Feq = get_float("Entrer le facteur de bruit équivalent Feq (dB): ")
+            Feq = get_float("Entrer le facteur de bruit équivalent Feq (dB):\n")
             break
         elif Feq_known == '2':
             Feq = calcul_Feq()
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, le facteur de bruit équivalent Feq est connu, ou '2' pour non.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui,\n"
+                  "le facteur de bruit équivalent Feq est connu, ou '2'\n"
+                  "pour non.")
     print("La sensibilité est de: ", Pr+Feq, "dB")
 
-#####################################################################################################################
+################################################################################
 
 
 def bruit():
     """
     Fonction principale qui affiche le menu et gère les choix de l'utilisateur.
     """
+    input("Appuyez sur entrer pour continuer")
     while True:
         print("1. Calculer Feq")
         print("2. Calculer Teq")
@@ -322,14 +373,16 @@ def calcul_Feq():
     """
     n = get_positive_int("Entrez le nombre de quadrupôles n: ")
     while True:
-        F_type = input("Le facteur de bruit F est-il en dB (1) ou linéaire (2)? (1/2): ")
+        F_type = input("Le facteur de bruit F est-il en dB (1) ou\n"
+                       "linéaire (2)? (1/2): ")
         if F_type not in ['1', '2']:
-            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour la valeur linéaire.")
+            print("Entrée non valide. Veuillez entrer '1' pour dB ou '2' pour\n"
+                  "la valeur linéaire.")
         else:
             break
     for i in range(n):
-        f = get_float(f"Entrez le facteur de bruit F{i+1}: ")
-        g = get_float(f"Entrez le gain G{i+1}: ")
+        f = get_float("Entrez le facteur de bruit F{}: ".format(i+1))
+        g = get_float("Entrez le gain G{}: ".format(i+1))
 
         # Si F et G sont en dB, les convertir en linéaire
         if F_type == '1':
@@ -348,7 +401,8 @@ def calcul_Feq():
     # Imprimer le facteur de bruit équivalent
     if F_type == '1':
         Feq_db = 10*log10(F)
-        print("Le facteur de bruit équivalent Feq est: ", "{:.3e}".format(Feq_db), "dB")
+        print("Le facteur de bruit équivalent Feq est: ",
+              "{:.3e}".format(Feq_db), "dB")
     elif F_type == '2':
         print("Le facteur de bruit équivalent Feq est: ", "{:.3e}".format(F))
     return Feq_db
@@ -359,15 +413,17 @@ def calcul_Teq():
     """
     n = get_positive_int("Entrez le nombre de quadrupôles n: ")
     while True:
-        T_type = input("La température de bruit T est-elle en K (1) ou en dB (2)? (1/2): ")
+        T_type = input("La température de bruit T est-elle en K (1) ou en dB\n"
+                       "(2)? (1/2): ")
         if T_type not in ['1', '2']:
-            print("Entrée non valide. Veuillez entrer '1' pour K ou '2' pour la valeur en dB.")
+            print("Entrée non valide. Veuillez entrer '1' pour K ou '2' pour\n"
+                  "la valeur en dB.")
         else:
             break
 
     for i in range(n):
-        t = get_float(f"Entrez la température de bruit T{i+1}: ")
-        g = get_float(f"Entrez le gain G{i+1}: ")
+        t = get_float("Entrez la température de bruit T{}: ".format(i+1))
+        g = get_float("Entrez le gain G{}: ".format(i+1))
 
         # Si T est en dB, la convertir en K
         if T_type == '2':
@@ -385,15 +441,18 @@ def calcul_Teq():
     # Imprimer la température de bruit équivalente
     if T_type == '2':
         Teq_db = 10*log10(T)
-        print("La température de bruit équivalente Teq est: ", "{:.3e}".format(Teq_db), "dB")
+        print("La température de bruit équivalente Teq est:\n",
+              "{:.3e}".format(Teq_db), "dB")
     elif T_type == '1':
-        print("La température de bruit équivalente Teq est: ", "{:.3e}".format(T))
+        print("La température de bruit équivalente Teq est:\n",
+              "{:.3e}".format(T))
 
-#####################################################################################################################
+################################################################################
 
 from math import log2
 
 def information():
+    input("Appuyez sur entrer pour continuer")
     while True:
         print("1. Arbre statistic")
         print("2. Calculer H(x)")
@@ -440,19 +499,21 @@ def stat():
 
     p_e = p_A0 * p_B1_given_A0 + p_A1 * p_B0_given_A1
 
-    print(f"P(B0) = { "{:.3e}".format(p_B0)}")
-    print(f"P(B1) = { "{:.3e}".format(p_B1)}")
-    print(f"P(A0|B0) = { "{:.3e}".format(p_A0_given_B0)}")
-    print(f"P(A1|B1) = { "{:.3e}".format(p_A1_given_B1)}")
-    print(f"P(e) = { "{:.3e}".format(p_e)}")
+    print("P(B0) = {}".format("{:.3e}".format(p_B0)))
+    print("P(B1) = {}".format("{:.3e}".format(p_B1)))
+    print("P(A0|B0) = {}".format("{:.3e}".format(p_A0_given_B0)))
+    print("P(A1|B1) = {}".format("{:.3e}".format(p_A1_given_B1)))
+    print("P(e) = {}".format("{:.3e}".format(p_e)))
 
-    print(f"""
-    A0({ "{:.3e}".format(p_A0)})  ----------------- B0({ "{:.3e}".format(p_B0)}) 
-                 | B1({ "{:.3e}".format(p_B1_given_A0)})
-                 |
-    A1({ "{:.3e}".format(p_A1)})  ----------------- B1({ "{:.3e}".format(p_B1)})
-                 | B0({ "{:.3e}".format(p_B0_given_A1)})
-    """)
+    print("""
+        A0({})  ----------------- B0({}) 
+                     | B1({})
+                     |
+        A1({})  ----------------- B1({})
+                     | B0({})
+        """.format("{:.3e}".format(p_A0), "{:.3e}".format(p_B0),
+                   "{:.3e}".format(p_B1_given_A0), "{:.3e}".format(p_A1),
+                   "{:.3e}".format(p_B1), "{:.3e}".format(p_B0_given_A1)))
 
 
 def calcul_H():
@@ -465,14 +526,14 @@ def calcul_H():
 
     # Demander à l'utilisateur la probabilité de chaque symbole
     for i in range(nombre_symboles):
-        p = float(input(f"Entrez la probabilité du symbole {i+1} : "))
+        p = float(input("Entrez la probabilité du symbole {} : ".format(i+1)))
         probabilites.append(p)
 
     # Calculer l'entropie H(x)
     H_x = sum([-p * log2(p) for p in probabilites])
 
     # Afficher l'entropie
-    print(f"H(x) = {H_x}")
+    print("H(x) = {}".format(H_x))
     
 def calcul_R():
     """
@@ -483,23 +544,26 @@ def calcul_R():
 
     while True:
         # Demander à l'utilisateur si H(X) est connu
-        H_known = input("La valeur de H(X) est-elle connue ? Oui (1) ou non (2)? (1/2): ")
+        H_known = input("La valeur de H(X) est-elle connue ? Oui (1) ou\n"
+                        "non (2)? (1/2): ")
         if H_known in ['1', '2']:
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, ou '2' pour non.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui, ou '2'\n"
+                  "pour non.")
 
     if H_known == '1':
         H_x = float(input("Entrez la valeur de H(X): "))
     else:
-        # Si H(X) n'est pas connu, utiliser la fonction calcul_H pour le déterminer
+        # Si H(X) n'est pas connu, utiliser la fonction calcul_H
+        # pour le déterminer
         H_x = calcul_H()
 
     # Calculer R
     R = r * H_x
 
     # Afficher R
-    print(f"R = {R}")
+    print("R = {}".format(R))
     
 def calcul_L():
     """
@@ -509,14 +573,16 @@ def calcul_L():
     nombre_symboles = int(input("Entrez le nombre de symboles : "))
     L = 0
 
-    # Pour chaque symbole, demander à l'utilisateur la probabilité pj et le nombre de bits lj, puis ajouter pj * lj à L
+    # Pour chaque symbole, demander à l'utilisateur la probabilité pj et le
+    # nombre de bits lj, puis ajouter pj * lj à L
     for i in range(nombre_symboles):
-        p = float(input(f"Entrez la probabilité du symbole {i+1} : "))
-        l = int(input(f"Entrez le nombre de bits pour le symbole {i+1} : "))
+        p = float(input("Entrez la probabilité du symbole {} : ".format(i+1)))
+        l = int(input("Entrez le nombre de bits pour le symbole {} : "
+                      .format(i+1)))
         L += p * l
 
     # Afficher L
-    print(f"L = {L}")
+    print("L = {}".format(L))
     
 def calcul_n():
     """
@@ -524,17 +590,21 @@ def calcul_n():
     """
     # Demander à l'utilisateur si H et L sont connus
     while True:
-        H_known = input("La valeur de H est-elle connue ?  Oui (1) ou non (2)? (1/2): ")
+        H_known = input("La valeur de H est-elle connue ?  Oui (1) ou\n"
+                        "non (2)? (1/2): ")
         if H_known in ['1', '2']:
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, ou '2' pour non.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui, ou '2'\n"
+                  "pour non.")
     while True:
-        L_known = input("La valeur de L est-elle connue ?  Oui (1) ou non (2)? (1/2): ")
+        L_known = input("La valeur de L est-elle connue ?  Oui (1) ou\n"
+                        "non (2)? (1/2): ")
         if L_known in ['1', '2']:
             break
         else:
-            print("Réponse invalide. Veuillez répondre '1' pour oui, ou '2' pour non.")
+            print("Réponse invalide. Veuillez répondre '1' pour oui, ou '2'\n"
+                  "pour non.")
 
     if H_known == '1':
         H = float(input("Entrez la valeur de H : "))
@@ -552,7 +622,7 @@ def calcul_n():
     n = H / L
 
     # Afficher n
-    print(f"n = {n}")
+    print("n = {}".format(n))
 
 # A node in the Huffman tree
 class Node:
@@ -570,7 +640,8 @@ def huffman():
     num_symbols = int(input("Entrez le nombre de symboles : "))
 
     # Demander les probabilités
-    p = [float(input(f"Entrez la probabilité du symbole {i+1} : ")) for i in range(num_symbols)]
+    p = [float(input("Entrez la probabilité du symbole {} : ".format(i+1))) 
+         for i in range(num_symbols)]
 
     # Créer une liste avec les feuilles pour chaque symbole
     queue = [(weight, Leaf(symbol)) for symbol, weight in enumerate(p)]
@@ -602,17 +673,18 @@ def huffman():
     L = sum(p[symbol] * len(code[symbol]) for symbol in code)
     H = -sum(p[symbol] * log2(p[symbol]) for symbol in code)
 
-    print(f"L = {L}")
-    print(f"H(X) = {H}")
+    print("L = {}".format(L))
+    print("H(X) = {}".format(H))
 
     return code
 
-#####################################################################################################################
+################################################################################
 
 def main():
     """
     Fonction principale qui affiche le menu et gère les choix de l'utilisateur.
     """
+    input("Appuyez sur entrer pour continuer")
     while True:
         print("1. Bilan de Liaison")
         print("2. Facteur de bruit")
@@ -633,5 +705,5 @@ def main():
         else:
             print("Choix invalide. Veuillez entrer un chiffre entre 1-3.")
 
-if __name__ == "__main__":
-    main()
+
+main()
