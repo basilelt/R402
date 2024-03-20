@@ -213,3 +213,4 @@ def huffman():
     print(f"H(X) = {H}")
 
     return code
+

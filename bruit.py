@@ -94,3 +94,4 @@ def calcul_Teq():
         print("La température de bruit équivalente Teq est: ", "{:.3e}".format(Teq_db), "dB")
     elif T_type == '1':
         print("La température de bruit équivalente Teq est: ", "{:.3e}".format(T))
+
