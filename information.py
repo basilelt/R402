@@ -207,7 +207,7 @@ def huffman():
 
     # Calculer L et H(X)
     L = sum(p[symbol] * len(code[symbol]) for symbol in code)
-    H = -sum(p[symbol] * math.log2(p[symbol]) for symbol in code)
+    H = -sum(p[symbol] * log2(p[symbol]) for symbol in code)
 
     print(f"L = {L}")
     print(f"H(X) = {H}")
