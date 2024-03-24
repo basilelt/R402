@@ -1,4 +1,5 @@
 from math import sqrt, pi, log10, log2
+import matplotlib.pyplot as plt
 
 def get_float(prompt):
     """
@@ -35,9 +36,9 @@ def liaison():
     """
     Fonction principale qui affiche le menu et gère les choix de l'utilisateur.
     """
-    input("Appuyez sur entrer pour\n"
-          "continuer")
     while True:
+        input("Appuyez sur entrer pour\n"
+              "continuer")
         print("1. Convertir en dB")
         print("2. Convertir en linéaire")
         print("3. Calculer Lp")
@@ -90,7 +91,8 @@ def convert_lin():
     """
     Convertit une puissance en linéaire.
     """
-    P = get_float("Entrer la puissance P:\n")
+    P = get_float("Entrer la puissance\n"
+                  "P (linéaire):\n")
     print("La puissance en linéaire est:\n",
           "{:.3e}".format(10**(P/10)), "W")
 
@@ -415,9 +417,9 @@ def bruit():
     """
     Fonction principale qui affiche le menu et gère les choix de l'utilisateur.
     """
-    input("Appuyez sur entrer pour\n"
-          "continuer")
     while True:
+        input("Appuyez sur entrer pour\n"
+              "continuer")
         print("1. Calculer Feq")
         print("2. Calculer Teq")
         print("3. Sortir")
@@ -427,7 +429,7 @@ def bruit():
         if choice == '1':
             calcul_Feq()
         elif choice == '2':
-            continue
+            calcul_Teq()
         elif choice == '3':
             print("Sortir...")
             break
@@ -529,10 +531,10 @@ def calcul_Teq():
 ################################################################################
 
 def information():
-    input("Appuyez sur entrer pour\n"
-          "continuer")
     while True:
-        print("1. Arbre statistic")
+        input("Appuyez sur entrer pour\n"
+              "continuer")
+        print("1. Arbre probabilités")
         print("2. Calculer H(x)")
         print("3. Calculer R")
         print("4. Calculer L")
@@ -563,40 +565,52 @@ def information():
 
 def stat():
     """
-    Crée un arbre statistique et calcule les probabilités conditionnelles.
+    Crée un arbre de probabilités et calcule les probabilités conditionnelles.
     """
-    p_A0 = float(input("Enter the value for\n"
-                       "P(A0):\n"))
-    p_B1_given_A0 = float(input("Enter the value for\n"
-                                "P(B1|A0):\n"))
-    p_B0_given_A1 = float(input("Enter the value for\n"
-                                "P(B0|A1):\n"))
+    # Demande à l'utilisateur les probabilités
+    P_A0 = get_float("Enter P(A0): ")
+    P_B1_A0 = get_float("Enter P(B1|A0): ")
+    P_B0_A1 = get_float("Enter P(B0|A1): ")
 
-    p_A1 = 1 - p_A0
-    p_B0 = p_A0 * (1 - p_B1_given_A0) + p_A1 * p_B0_given_A1
-    p_B1 = 1 - p_B0
+    # Calcule les probabilités restantes
+    P_A1 = 1 - P_A0
+    P_B0_A0 = 1 - P_B1_A0
+    P_B1_A1 = 1 - P_B0_A1
 
-    p_A0_given_B0 = (p_A0 * (1 - p_B1_given_A0)) / p_B0
-    p_A1_given_B1 = (p_A1 * (1 - p_B0_given_A1)) / p_B1
+    # Calcule les probabilités conjointes
+    P_A0_B0 = P_A0 * P_B0_A0
+    P_A0_B1 = P_A0 * P_B1_A0
+    P_A1_B0 = P_A1 * P_B0_A1
+    P_A1_B1 = P_A1 * P_B1_A1
 
-    p_e = p_A0 * p_B1_given_A0 + p_A1 * p_B0_given_A1
+    # Calcule les probabilités marginales
+    P_B0 = P_A0_B0 + P_A1_B0
+    P_B1 = P_A0_B1 + P_A1_B1
 
-    print("P(B0) =\n{}".format("{:.3e}".format(p_B0)))
-    print("P(B1) =\n{}".format("{:.3e}".format(p_B1)))
-    print("P(A0|B0) =\n{}".format("{:.3e}".format(p_A0_given_B0)))
-    print("P(A1|B1) =\n{}".format("{:.3e}".format(p_A1_given_B1)))
-    print("P(e) =\n{}".format("{:.3e}".format(p_e)))
+    # Applique le théorème de Bayes pour calculer les probabilités
+    # conditionnelles inverses
+    P_A0_B0 = P_A0_B0 / P_B0 if P_B0 != 0 else 0
+    P_A0_B1 = P_A0_B1 / P_B1 if P_B1 != 0 else 0
+    P_A1_B0 = P_A1_B0 / P_B0 if P_B0 != 0 else 0
+    P_A1_B1 = P_A1_B1 / P_B1 if P_B1 != 0 else 0
 
-    print("""
-        A0({})  ----------------- B0({}) 
-                     | B1({})
-                     |
-        A1({})  ----------------- B1({})
-                     | B0({})
-        """.format("{:.3e}".format(p_A0), "{:.3e}".format(p_B0),
-                   "{:.3e}".format(p_B1_given_A0), "{:.3e}".format(p_A1),
-                   "{:.3e}".format(p_B1), "{:.3e}".format(p_B0_given_A1)))
+    # Calcule la probabilité d'erreur
+    Pe = P_A0 * P_B1_A0 + P_A1 * P_B0_A1
 
+    # Print the results
+    print('P(A0) = {:.3e}'.format(P_A0))
+    print('P(B1|A0) = {:.3e}'.format(P_B1_A0))
+    print('P(B0|A1) = {:.3e}'.format(P_B0_A1))
+    print('P(A1) = {:.3e}'.format(P_A1))
+    print('P(B0|A0) = {:.3e}'.format(P_B0_A0))
+    print('P(B1|A1) = {:.3e}'.format(P_B1_A1))
+    print('P(B0) = {:.3e}'.format(P_B0))
+    print('P(B1) = {:.3e}'.format(P_B1))
+    print('P(A0|B0) = {:.3e}'.format(P_A0_B0))
+    print('P(A0|B1) = {:.3e}'.format(P_A0_B1))
+    print('P(A1|B0) = {:.3e}'.format(P_A1_B0))
+    print('P(A1|B1) = {:.3e}'.format(P_A1_B1))
+    print('Pe = {:.3e}'.format(Pe))
 
 def calcul_H():
     """
@@ -624,8 +638,8 @@ def calcul_R():
     Calcule R = r.H(X) .
     """
     # Demander à l'utilisateur la valeur de r
-    r = float(input("Entrez la valeur de r\n"
-                    "(symbole/s):\n"))
+    r = get_float("Entrez la valeur de r\n"
+                  "(symbole/s):\n")
 
     while True:
         # Demander à l'utilisateur si H(X) est connu
@@ -640,7 +654,7 @@ def calcul_R():
                   "'2' pour non.")
 
     if H_known == '1':
-        H_x = float(input("Entrez la valeur de H(X):\n"))
+        H_x = get_float("Entrez la valeur de H(X):\n")
     else:
         # Si H(X) n'est pas connu, utiliser la fonction calcul_H
         # pour le déterminer
@@ -657,17 +671,17 @@ def calcul_L():
     Calcule L = sum(pj * lj).
     """
     # Demander à l'utilisateur le nombre de symboles
-    nombre_symboles = int(input("Entrez le nombre de\n"
-                                "symboles: "))
+    nombre_symboles = get_positive_int("Entrez le nombre de\n"
+                                       "symboles: ")
     L = 0
 
     # Pour chaque symbole, demander à l'utilisateur la probabilité pj et le
     # nombre de bits lj, puis ajouter pj * lj à L
     for i in range(nombre_symboles):
-        p = float(input("Entrez la probabilité du\n"
-                        "symbole {}: ".format(i+1)))
-        l = int(input("Entrez le nombre de bits\n"
-                      "pour le symbole {}: ".format(i+1)))
+        p = get_float("Entrez la probabilité du\n"
+                      "symbole {}: ".format(i+1))
+        l = get_positive_int("Entrez le nombre de bits\n"
+                             "pour le symbole {}: ".format(i+1))
         L += p * l
 
     # Afficher L
@@ -700,13 +714,13 @@ def calcul_n():
                   "'2' pour non.")
 
     if H_known == '1':
-        H = float(input("Entrez la valeur de H:\n"))
+        H = get_float("Entrez la valeur de H:\n")
     else:
         # Si H n'est pas connu, utiliser la fonction calcul_H pour le déterminer
         H = calcul_H()
 
     if L_known == '1':
-        L = float(input("Entrez la valeur de L:\n"))
+        L = get_float("Entrez la valeur de L:\n")
     else:
         # Si L n'est pas connu, utiliser la fonction calcul_L pour le déterminer
         L = calcul_L()
@@ -730,12 +744,12 @@ class Leaf:
 
 def huffman():
     # Demander le nombre de symboles
-    num_symbols = int(input("Entrez le nombre de\n"
-                            "symboles: "))
+    num_symbols = get_positive_int("Entrez le nombre de\n"
+                                   "symboles: ")
 
     # Demander les probabilités
-    p = [float(input("Entrez la probabilité du\n"
-                     "symbole {}:\n".format(i+1))) for i in range(num_symbols)]
+    p = [get_float("Entrez la probabilité du\n"
+                   "symbole {}:\n".format(i+1)) for i in range(num_symbols)]
 
     # Créer une liste avec les feuilles pour chaque symbole
     queue = [(weight, Leaf(symbol)) for symbol, weight in enumerate(p)]
@@ -778,9 +792,9 @@ def main():
     """
     Fonction principale qui affiche le menu et gère les choix de l'utilisateur.
     """
-    input("Appuyez sur entrer pour\n"
-          "continuer")
     while True:
+        input("Appuyez sur entrer pour\n"
+              "continuer")
         print("1. Bilan de Liaison")
         print("2. Facteur de bruit")
         print("3. Théorie de l'information")
