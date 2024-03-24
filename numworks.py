@@ -1,5 +1,5 @@
 from math import sqrt, pi, log10, log2
-import kandinsky as kd
+import matplotlib.pyplot as plt
 
 def get_float(prompt):
     """
@@ -638,6 +638,7 @@ def calcul_H():
 
     # Afficher l'entropie
     print("H(x) =\n{}".format("{:.3e}".format(H_x)))
+    return H_x
     
 def calcul_R():
     """
@@ -792,26 +793,26 @@ def huffman():
     
     input("Appuyez sur entrer pour\n"
           "continuer")
-    
-    def plot_tree(node, x=160, y=20, dx=80, dy=40):
-        if not node['is_leaf']:
-            # Draw lines using set_pixel
-            for i in range(y, y+dy):  # vertical line to the left child
-                kd.set_pixel(x-dx, i, kd.color(0, 0, 0))
-            for i in range(y, y+dy):  # vertical line to the right child
-                kd.set_pixel(x+dx, i, kd.color(0, 0, 0))
-            plot_tree(node['left'], x-dx, y+dy, dx//2, dy)
-            plot_tree(node['right'], x+dx, y+dy, dx//2, dy)
-        else:  # Leaf
-            kd.fill_rect(x-2, y-2, 4, 4, kd.color(0, 0, 0))
 
-    # Clear the screen
-    kd.fill_rect(0, 0, 320, 240, kd.color(255, 255, 255))
+    def plot_tree(node, x=0.5, y=0.5, dx=0.25, dy=0.1):
+        if not node['is_leaf']:
+            # Draw lines using plot
+            plt.plot([x-dx, x+dx], [y, y])  # horizontal line
+            plt.plot([x-dx, x-dx], [y, y-dy])  # vertical line to the left child
+            plt.plot([x+dx, x+dx], [y, y-dy])  # vertical line to the right child
+            plot_tree(node['left'], x-dx, y-dy, dx//2, dy)
+            plot_tree(node['right'], x+dx, y-dy, dx//2, dy)
+        else:  # Leaf
+            plt.plot([x, x], [y, y])  # plot a small line for the leaf
+
+        plt.xlim(0, 1)
+        plt.ylim(0, 1)
+        plt.gca().invert_yaxis()  # Flip the y-axis so the tree is drawn from top to bottom
 
     # Draw the Huffman tree
     plot_tree(queue[0])
 
-    return code
+    plt.show()
 
 ################################################################################
 
