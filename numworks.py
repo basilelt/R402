@@ -694,6 +694,8 @@ def calcul_L():
     # Afficher L
     print("L =\n{}".format("{:.3e}".format(L)))
     
+    return L
+    
 def calcul_n():
     """
     Calcule le rendement n = H/L.
@@ -786,6 +788,9 @@ def huffman():
     L = sum(p[symbol] * len(code[symbol]) for symbol in code)
     H = -sum(p[symbol] * log2(p[symbol]) for symbol in code)
     n = H / L
+    
+    input("Appuyez sur entrer pour\n"
+          "continuer")
 
     print("L =\n{}".format("{:.3e}".format(L)))
     print("H(X) =\n{}".format("{:.3e}".format(H)))
@@ -805,9 +810,7 @@ def huffman():
         else:  # Leaf
             plt.plot([x, x], [y, y])  # plot a small line for the leaf
 
-        plt.xlim(0, 1)
-        plt.ylim(0, 1)
-        plt.gca().invert_yaxis()  # Flip the y-axis so the tree is drawn from top to bottom
+        plt.axis([0, 1, 1, 0])  # set the plot limits and flip the y-axis
 
     # Draw the Huffman tree
     plot_tree(queue[0])
