@@ -780,19 +780,20 @@ def huffman():
 
     # Construire le code Huffman à partir de l'arbre
     code = {}
+    order = []
     def traverse(node, prefix = ""):
         if isinstance(node, Leaf):
             code[node.symbol] = prefix
-
+            order.append(node.symbol)
         else:
             traverse(node.left, prefix + "0")
             traverse(node.right, prefix + "1")
 
     traverse(queue[0][1])
 
-    # Print the Huffman codes
+    # Print the Huffman codes in order
     print("Symbol\tWeight\tHuffman Code")
-    for symbol in sorted(code, key=code.get):
+    for symbol in order:
         print("{}\t{}\t{}".format(symbol, p[symbol], code[symbol]))
 
     # Calculer L, H(X) et n
@@ -803,8 +804,28 @@ def huffman():
     print("L =\n{}".format("{:.3e}".format(L)))
     print("H(X) =\n{}".format("{:.3e}".format(H)))
     print("n =\n{}".format("{:.3e}".format(n)))
+    
+    input("Appuyez sur entrer pour\n"
+          "continuer")
+    
+    # Plot the Huffman tree
+    plot_tree(queue[0][1])
+    plt.gca().invert_yaxis()  # Invert y axis to have the root at the top
+    plt.show()
 
     return code
+
+def plot_tree(node, x=0, y=0, dx=0.5, dy=1, order=None, i=[0]):
+    if isinstance(node, Node):
+        plt.plot([x, x-dx], [y, y-dy], 'k')
+        plt.plot([x, x+dx], [y, y-dy], 'k')
+        plot_tree(node.left, x-dx, y-dy, dx/2, dy, order, i)
+        plot_tree(node.right, x+dx, y-dy, dx/2, dy, order, i)
+    else:  # Leaf
+        plt.plot(x, y, 'ko')
+        if order is not None:
+            plt.text(x, y, str(order[i[0]]), ha='center')
+            i[0] += 1
 
 ################################################################################
 
