@@ -1,5 +1,5 @@
 from math import sqrt, pi, log10, log2
-import matplotlib.pyplot as plt
+import kandinsky as kd
 
 def get_float(prompt):
     """
@@ -737,23 +737,6 @@ def calcul_n():
     # Afficher n
     print("n =\n{}".format("{:.3e}".format(n)))
 
-# Un node dans l'arbre d'Huffman
-class Node:
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-    def __lt__(self, other):
-        return False  # Les node sont toujours 'plus grands que' les leaf.
-
-# Une leaf dans l'arbre d'Huffman
-class Leaf:
-    def __init__(self, symbol):
-        self.symbol = symbol
-
-    def __lt__(self, other):
-        return True  # Les leaf sont toujours 'plus grandes que' les node.
-
 def huffman():
     # Demander le nombre de symboles
     num_symbols = get_positive_int("Entrez le nombre de\n"
@@ -764,8 +747,9 @@ def huffman():
                    "symbole {}:\n".format(i+1)) for i in range(num_symbols)]
 
     # Créer une liste avec les feuilles pour chaque symbole
-    queue = [(weight, Leaf(symbol)) for symbol, weight in enumerate(p)]
-    queue.sort()
+    queue = [{'weight': weight, 'symbol': symbol, 'is_leaf': True} for symbol,
+             weight in enumerate(p)]
+    queue.sort(key=lambda x: x['weight'])
 
     # Tant qu'il y a plus d'un nœud dans la file d'attente
     while len(queue) > 1:
@@ -774,25 +758,26 @@ def huffman():
         hi = queue.pop(0)
 
         # Créer un nouveau nœud et l'insérer dans la file d'attente
-        new_node = (lo[0] + hi[0], Node(lo[1], hi[1]))
+        new_node = {'weight': lo['weight'] + hi['weight'], 'left': lo,
+                    'right': hi, 'is_leaf': False}
         queue.append(new_node)
-        queue.sort()
+        queue.sort(key=lambda x: x['weight'])
 
     # Construire le code Huffman à partir de l'arbre
     code = {}
     order = []
     def traverse(node, prefix = ""):
-        if isinstance(node, Leaf):
-            code[node.symbol] = prefix
-            order.append(node.symbol)
+        if node['is_leaf']:
+            code[node['symbol']] = prefix
+            order.append(node['symbol'])
         else:
-            traverse(node.left, prefix + "0")
-            traverse(node.right, prefix + "1")
+            traverse(node['left'], prefix + "0")
+            traverse(node['right'], prefix + "1")
 
-    traverse(queue[0][1])
+    traverse(queue[0])
 
-    # Print the Huffman codes in order
-    print("Symbol\tWeight\tHuffman Code")
+    # Imprimer les codes Huffman dans l'ordre
+    print("Symbole\tPoids\tCode Huffman")
     for symbol in order:
         print("{}\t{}\t{}".format(symbol, p[symbol], code[symbol]))
 
@@ -808,24 +793,25 @@ def huffman():
     input("Appuyez sur entrer pour\n"
           "continuer")
     
-    # Plot the Huffman tree
-    plot_tree(queue[0][1])
-    plt.gca().invert_yaxis()  # Invert y axis to have the root at the top
-    plt.show()
+    def plot_tree(node, x=160, y=20, dx=80, dy=40):
+        if not node['is_leaf']:
+            # Draw lines using set_pixel
+            for i in range(y, y+dy):  # vertical line to the left child
+                kd.set_pixel(x-dx, i, kd.color(0, 0, 0))
+            for i in range(y, y+dy):  # vertical line to the right child
+                kd.set_pixel(x+dx, i, kd.color(0, 0, 0))
+            plot_tree(node['left'], x-dx, y+dy, dx//2, dy)
+            plot_tree(node['right'], x+dx, y+dy, dx//2, dy)
+        else:  # Leaf
+            kd.fill_rect(x-2, y-2, 4, 4, kd.color(0, 0, 0))
+
+    # Clear the screen
+    kd.fill_rect(0, 0, 320, 240, kd.color(255, 255, 255))
+
+    # Draw the Huffman tree
+    plot_tree(queue[0])
 
     return code
-
-def plot_tree(node, x=0, y=0, dx=0.5, dy=1, order=None, i=[0]):
-    if isinstance(node, Node):
-        plt.plot([x, x-dx], [y, y-dy], 'k')
-        plt.plot([x, x+dx], [y, y-dy], 'k')
-        plot_tree(node.left, x-dx, y-dy, dx/2, dy, order, i)
-        plot_tree(node.right, x+dx, y-dy, dx/2, dy, order, i)
-    else:  # Leaf
-        plt.plot(x, y, 'ko')
-        if order is not None:
-            plt.text(x, y, str(order[i[0]]), ha='center')
-            i[0] += 1
 
 ################################################################################
 
