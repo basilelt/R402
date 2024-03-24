@@ -68,7 +68,7 @@ def liaison():
         elif choice == '7':
             calcul_Pe()
         elif choice == '8':    
-            calcul_diamentre_antenne()
+            calcul_diametre_antenne()
         elif choice == '9':
             calcul_signal_bruit()
         elif choice == '10':
@@ -111,6 +111,8 @@ def calcul_Lp(result_type=''):
           "{:.3e}".format(Lp_dB), "dB")
     print("La perte en ligne linéaire Lp est:\n",
           "{:.3e}".format(Lp))
+    input("Appuyez sur entrer pour\n"
+          "continuer")
    
     if result_type == '1':
         return Lp_dB
@@ -314,7 +316,7 @@ def calcul_Pe():
     print("La puissance émise Pe est:\n",
           "{:.3e}".format(10**(Pe/10)), "W")
 
-def calcul_diamentre_antenne():
+def calcul_diametre_antenne():
     """
     Calcule le diamètre de l'antenne dm.
     """
@@ -568,9 +570,9 @@ def stat():
     Crée un arbre de probabilités et calcule les probabilités conditionnelles.
     """
     # Demande à l'utilisateur les probabilités
-    P_A0 = get_float("Enter P(A0): ")
-    P_B1_A0 = get_float("Enter P(B1|A0): ")
-    P_B0_A1 = get_float("Enter P(B0|A1): ")
+    P_A0 = get_float("Entrez P(A0): ")
+    P_B1_A0 = get_float("Entrez P(B1|A0): ")
+    P_B0_A1 = get_float("Entrez P(B0|A1): ")
 
     # Calcule les probabilités restantes
     P_A1 = 1 - P_A0
@@ -602,10 +604,14 @@ def stat():
     print('P(B1|A0) = {:.3e}'.format(P_B1_A0))
     print('P(B0|A1) = {:.3e}'.format(P_B0_A1))
     print('P(A1) = {:.3e}'.format(P_A1))
+    input("Appuyez sur entrer pour\n"
+          "continuer")
     print('P(B0|A0) = {:.3e}'.format(P_B0_A0))
     print('P(B1|A1) = {:.3e}'.format(P_B1_A1))
     print('P(B0) = {:.3e}'.format(P_B0))
     print('P(B1) = {:.3e}'.format(P_B1))
+    input("Appuyez sur entrer pour\n"
+          "continuer")
     print('P(A0|B0) = {:.3e}'.format(P_A0_B0))
     print('P(A0|B1) = {:.3e}'.format(P_A0_B1))
     print('P(A1|B0) = {:.3e}'.format(P_A1_B0))
@@ -685,7 +691,7 @@ def calcul_L():
         L += p * l
 
     # Afficher L
-    print("L =\n{}".format(L))
+    print("L =\n{}".format("{:.3e}".format(L)))
     
 def calcul_n():
     """
@@ -729,18 +735,24 @@ def calcul_n():
     n = H / L
 
     # Afficher n
-    print("n =\n{}".format(n))
+    print("n =\n{}".format("{:.3e}".format(n)))
 
-# A node in the Huffman tree
+# Un node dans l'arbre d'Huffman
 class Node:
     def __init__(self, left, right):
         self.left = left
         self.right = right
 
-# A leaf in the Huffman tree
+    def __lt__(self, other):
+        return False  # Les node sont toujours 'plus grands que' les leaf.
+
+# Une leaf dans l'arbre d'Huffman
 class Leaf:
     def __init__(self, symbol):
         self.symbol = symbol
+
+    def __lt__(self, other):
+        return True  # Les leaf sont toujours 'plus grandes que' les node.
 
 def huffman():
     # Demander le nombre de symboles
@@ -771,18 +783,26 @@ def huffman():
     def traverse(node, prefix = ""):
         if isinstance(node, Leaf):
             code[node.symbol] = prefix
+
         else:
             traverse(node.left, prefix + "0")
             traverse(node.right, prefix + "1")
 
     traverse(queue[0][1])
 
-    # Calculer L et H(X)
+    # Print the Huffman codes
+    print("Symbol\tWeight\tHuffman Code")
+    for symbol in sorted(code, key=code.get):
+        print("{}\t{}\t{}".format(symbol, p[symbol], code[symbol]))
+
+    # Calculer L, H(X) et n
     L = sum(p[symbol] * len(code[symbol]) for symbol in code)
     H = -sum(p[symbol] * log2(p[symbol]) for symbol in code)
+    n = H / L
 
-    print("L =\n{}".format(L))
-    print("H(X) =\n{}".format(H))
+    print("L =\n{}".format("{:.3e}".format(L)))
+    print("H(X) =\n{}".format("{:.3e}".format(H)))
+    print("n =\n{}".format("{:.3e}".format(n)))
 
     return code
 
